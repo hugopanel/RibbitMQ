@@ -1,0 +1,4 @@
+TestRibbitMQ/
+.idea/
+*/bin/
+*/obj/
