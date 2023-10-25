@@ -2,36 +2,26 @@ namespace RibbitMQ;
 
 public class RibbitMQ<TMessage>
 {
-    public delegate Task MessageHandler(Message<TMessage> message);
+    public delegate Task MessageHandler(IMessage<TMessage> message);
 
     private static Dictionary<TMessage, List<MessageHandler>> _subscribers = new();
-
-    public void Send(TMessage messageType, object? content, object? from = null, object? to = null, SendType sendType = SendType.All)
+    
+    public void Send(IMessage<TMessage> message)
     {
-        Message<TMessage> message = new Message<TMessage>
-        {
-            MessageType = messageType,
-            Content = content,
-            From = from,
-            To = to,
-            SendType = sendType
-        };
-        if (_subscribers.Keys.Contains(messageType))
+        if (_subscribers.Keys.Contains(message.MessageType))
         {
             switch (message.SendType)
             {
                 case SendType.FirstFree:
-                    Task.Run(async () => await _subscribers[messageType].First()(message));
+                    Task.Run(async () => await _subscribers[message.MessageType].First()(message));
                     break;
                 case SendType.All:
                 default:
-                    _subscribers[messageType].ForEach(s => Task.Run(async () =>  await s(message) ));
+                    _subscribers[message.MessageType].ForEach(s => Task.Run(async () => await s(message)));
                     break;
             }
-        }
-        else
-        {
-            Console.WriteLine("Cannot find message type ${0}", messageType);
+        } else {
+            Console.WriteLine("Cannot find message type ${0}!", message.MessageType);
         }
     }
 

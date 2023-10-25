@@ -1,10 +1,10 @@
 namespace RibbitMQ;
 
-public class Message<TMessage>
+public interface IMessage<TMessage>
 {
     public TMessage MessageType { get; set; }
+    
+    public SendType? SendType { get; set; }
+
     public object? Content { get; set; }
-    public object? From { get; set; }
-    public object? To { get; set; }
-    public SendType SendType { get; set; } = SendType.All;
 }
