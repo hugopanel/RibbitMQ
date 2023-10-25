@@ -2,3 +2,4 @@ TestRibbitMQ/
 .idea/
 */bin/
 */obj/
+.vs/
