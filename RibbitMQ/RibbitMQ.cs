@@ -28,9 +28,10 @@ public class RibbitMQ<TMessage>
     public void Subscribe(TMessage messageType, MessageHandler callback)
     {
         if (!_subscribers.Keys.Contains(messageType))
-            _subscribers.Add(messageType, new());
-        
-        _subscribers[messageType].Add(callback);
+                _subscribers.Add(messageType, new());
+
+        if (!_subscribers[messageType].Contains(callback))
+            _subscribers[messageType].Add(callback);
     }
 
     public void Unsubscribe(TMessage messageType, MessageHandler callback)
